@@ -1,0 +1,23 @@
+[project]
+name = "strictabc"
+dynamic=["version"]
+authors = [
+  { name="Trevor Viken", email="trevor.viken@gmail.com" },
+]
+maintainers = [
+  { name="Trevor Viken", email="trevor.viken@gmail.com" }
+]
+description = "A module containing the implementation of a Node Tree"
+readme = "README.rst"
+requires-python = ">=3.10"
+keywords = ["node","tree","binary tree","nodetree","node tree"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.urls]
+Homepage = "https://github.com/taviken/Green-tree"
+Issues = "https://github.com/taviken/Green-tree/issues"

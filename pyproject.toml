@@ -1,6 +1,6 @@
 [project]
-name = "strictabc"
-dynamic=["version"]
+name = "greentree"
+version = "0.1.0"
 authors = [
   { name="Trevor Viken", email="trevor.viken@gmail.com" },
 ]

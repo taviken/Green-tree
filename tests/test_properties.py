@@ -1,5 +1,7 @@
 from src.greentree import *
 import pytest
+from io import StringIO
+from contextlib import redirect_stdout
 
 
 @pytest.fixture
@@ -76,4 +78,15 @@ def test_format(setup1):
     assert (
         f"{a:dict}"
         == "{'children': [{'children': [{'tag': None, 'value': 'd'},\n                            {'tag': None, 'value': 'e'}],\n               'tag': None,\n               'value': 'b'},\n              {'children': [{'tag': None, 'value': 'f'},\n                            {'tag': None, 'value': 'g'}],\n               'tag': None,\n               'value': 'c'}],\n 'tag': None,\n 'value': 'a'}\n"
+    )
+
+
+def test_show(setup1):
+    a, *_ = setup1
+    stream = StringIO()
+    with redirect_stdout(stream):
+        a.show()
+    assert (
+        stream.getvalue().strip()
+        == "└── a\n    ├── b\n    │   ├── d\n    │   └── e\n    └── c\n        ├── f\n        └── g"
     )

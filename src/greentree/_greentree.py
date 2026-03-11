@@ -125,6 +125,9 @@ class Node:
             pprint(self.as_dict, stream)
             return stream.getvalue()
 
+    def show(self) -> None:
+        print(f"{self:pipe}")
+
 
 __all__ = [
     "Node",

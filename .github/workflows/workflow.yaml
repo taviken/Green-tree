@@ -2,8 +2,14 @@ name: Python application CI
 
 on:
   push:
+    paths-ignore:
+      - 'LICENSE'
+      - 'README.rst'
     branches: [ "main",'test-pipeline' ]
   pull_request:
+    paths-ignore:
+      - 'LICENSE'
+      - 'README.rst'
     branches: [ "main",'test-pipeline' ]
 
 

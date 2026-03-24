@@ -72,9 +72,9 @@ class Node:
         item.parent = self
         self._children.append(item)
 
-    def level_order_traversal(self, root=None):
-        if root is None:
-            root = self
+    def level_order_traversal(self):
+
+        root = self
         queue = deque([root])
         while queue:
             node = queue.popleft()
@@ -84,15 +84,11 @@ class Node:
             if node._children:
                 queue.extend(node._children)
 
-    def pre_order_traversal(self, root=None):
-        if root is None:
-            root = self
-        return self._dfs_traversal(root, True)
+    def pre_order_traversal(self):
+        return self._dfs_traversal(self, True)
 
-    def post_order_traversal(self, root=None):
-        if root is None:
-            root = self
-        return self._dfs_traversal(root, False)
+    def post_order_traversal(self):
+        return self._dfs_traversal(self, False)
 
     def _dfs_traversal(self, root, is_preorder=True):
 
@@ -116,14 +112,15 @@ class Node:
         return f"{self.__class__.__name__}({self.value!r})"
 
     def __format__(self, format_spec):
+        stream = StringIO()
         if format_spec == "pipe":
-            stream = StringIO()
             _format_tree_with_pipes(self, stream)
             return stream.getvalue()
         elif format_spec == "dict":
-            stream = StringIO()
             pprint(self.as_dict, stream)
             return stream.getvalue()
+        else:
+            return str(self)
 
     def show(self) -> None:
         print(f"{self:pipe}")

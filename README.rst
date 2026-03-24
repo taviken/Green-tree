@@ -34,12 +34,12 @@ Using the show method:
 
     >>> a.show()
     └── a
-    ├── b
-    │   ├── d
-    │   └── e
-    └── c
-        ├── f
-        └── g
+        ├── b
+        │   ├── d
+        │   └── e
+        └── c
+            ├── f
+            └── g
 
 
 

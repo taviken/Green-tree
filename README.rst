@@ -41,14 +41,6 @@ Using the show method:
             ├── f
             └── g
 
-Using the search by tag methos:
-
-.. code-block:: python
-    >>> a.search_by_tag('tag name here')
-
-
-
-
 License
 -------
 

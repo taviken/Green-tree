@@ -29,9 +29,6 @@ Basic Usage:
     c.add_right(g)
 
 Using the show method:
-
-.. code-block:: text
-
     a.show()
     └── a
         ├── b

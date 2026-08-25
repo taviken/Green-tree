@@ -121,7 +121,7 @@ class Node:
         """
         return _to_dict(self)
 
-    def insert_child(self, index: int, value: object | "Node") -> None:
+    def insert_child(self, index: int, value: Union[object, "Node"]) -> None:
         """
         Inserts any valid object into the given index. If the given index exceeds
         the current length or is less than 0, it will append the child to the right(same

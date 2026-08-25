@@ -32,7 +32,7 @@ Using the show method:
 
 .. code-block:: python
 
-    >>> a.show()
+    a.show()
     └── a
         ├── b
         │   ├── d

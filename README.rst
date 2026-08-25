@@ -28,27 +28,6 @@ Basic Usage:
     c.add_left(f)
     c.add_right(g)
 
-Using the show method:
-
-.. code-block:: python
-
-    >>> a.show()
-    └── a
-        ├── b
-        │   ├── d
-        │   └── e
-        └── c
-            ├── f
-            └── g
-
-Using the search by tag methos:
-
-.. code-block:: python
->>> a.search_by_tag('tag name here')
-
-
-
-
 License
 -------
 

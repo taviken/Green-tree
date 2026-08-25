@@ -106,3 +106,73 @@ def test_from_dict():
         format(root, "pipe")
         == "└── root\n    └── a\n        ├── b\n        │   └── c\n        │       ├── 1\n        │       ├── 2\n        │       └── 3\n        └── e\n            └── f\n                └── g\n"
     )
+
+
+def test_getattr(setup1):
+    a, b, *_ = setup1
+    assert a.b == b
+
+    with pytest.raises(AttributeError) as e:
+        a.foo
+
+
+def test_children_view(setup1):
+    a, *_ = setup1
+    view = a.children
+    assert str(view) == "ChildrenView([Node('b'), Node('c')])"
+
+
+def test_dir(setup1):
+    a, *_ = setup1
+    assert dir(a) == [
+        "__class__",
+        "__delattr__",
+        "__dir__",
+        "__doc__",
+        "__eq__",
+        "__firstlineno__",
+        "__format__",
+        "__ge__",
+        "__getattr__",
+        "__getattribute__",
+        "__getstate__",
+        "__gt__",
+        "__hash__",
+        "__init__",
+        "__init_subclass__",
+        "__le__",
+        "__lt__",
+        "__module__",
+        "__ne__",
+        "__new__",
+        "__reduce__",
+        "__reduce_ex__",
+        "__repr__",
+        "__setattr__",
+        "__sizeof__",
+        "__slots__",
+        "__static_attributes__",
+        "__str__",
+        "__subclasshook__",
+        "_children",
+        "_dfs_traversal",
+        "_from_dict_recur",
+        "add_left",
+        "add_right",
+        "as_dict",
+        "b",
+        "c",
+        "children",
+        "from_dict",
+        "is_binary",
+        "is_leaf",
+        "is_root",
+        "is_single_link",
+        "level_order_traversal",
+        "parent",
+        "post_order_traversal",
+        "pre_order_traversal",
+        "show",
+        "tag",
+        "value",
+    ]

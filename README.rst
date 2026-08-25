@@ -30,7 +30,6 @@ Basic Usage:
 
 Using node.show()
 .. code-block:: text
-
     a.show()
     └── a
         ├── b
@@ -40,8 +39,6 @@ Using node.show()
             ├── f
             └── g
 
-License
--------
 License
 -------
 

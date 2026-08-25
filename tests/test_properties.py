@@ -99,3 +99,10 @@ def test_from_dict():
         format(root, "pipe")
         == "└── root\n    └── a\n        ├── b\n        │   └── c\n        │       └── d\n        └── e\n            └── f\n                └── g\n"
     )
+
+    data["a"]["b"]["c"] = [1, 2, 3]
+    root = Node.from_dict(data)
+    assert (
+        format(root, "pipe")
+        == "└── root\n    └── a\n        ├── b\n        │   └── c\n        │       ├── 1\n        │       ├── 2\n        │       └── 3\n        └── e\n            └── f\n                └── g\n"
+    )

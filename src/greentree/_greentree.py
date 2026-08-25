@@ -4,7 +4,7 @@ implement a generic tree-node.
 """
 
 from collections import deque
-from typing import Union, IO, Deque, Generator, Mapping
+from typing import Union, IO, Deque, Generator, Mapping, Sequence
 from io import StringIO
 from pprint import pprint
 
@@ -200,9 +200,13 @@ class Node:
             node.add_right(new_node)
             if isinstance(children, Mapping):
                 self._from_dict_recur(new_node, children, node_class)
-            else:
+            elif isinstance(children, Sequence) and not isinstance(
+                children, (str, bytes)
+            ):
                 for child in children:
                     new_node.add_right(child)
+            else:
+                new_node.add_right(children)
 
     @classmethod
     def from_dict(cls, data: Mapping, root_name: str | None = None) -> "Node":

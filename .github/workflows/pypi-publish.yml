@@ -22,7 +22,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-cache: 'pip'
+          pip-cache: 'pip'
 
       - name: Build distributions
         run: |

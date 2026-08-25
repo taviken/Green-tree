@@ -119,9 +119,58 @@ def test_getattr(setup1):
 def test_children_view(setup1):
     a, *_ = setup1
     view = a.children
-    assert str(view) == "ChildrenView([Node('b'), Node('c')])"
+    assert str(view) == "ChildrenView(0 : Node('b'), 1 : Node('c'))"
 
 
 def test_dir(setup1):
     a, *_ = setup1
     assert "b" in dir(a)
+
+
+def test_getitem():
+    root = Node("root")
+    for x in "defgh":
+        root.add_right(x)
+
+    a = Node("a")
+    b = Node("b")
+    c = Node("c")
+    root.add_left(c)
+    root.add_left(b)
+    root.add_left(a)
+
+    assert root[0] == a
+    assert root[0:3] == [a, b, c]
+    assert root[-6] == c
+
+
+def test_delitem():
+    root = Node("root")
+    for x in "abcdefgh":
+        root.add_right(x)
+    del root[1:4:2]
+    assert (
+        format(root, "pipe")
+        == "└── root\n    ├── a\n    ├── c\n    ├── e\n    ├── f\n    ├── g\n    └── h\n"
+    )
+
+
+def test_insert():
+    root = Node("root")
+    for x in "abcdefgh":
+        root.add_right(x)
+    root.insert_child(3, "foo")
+    assert (
+        format(root, "pipe")
+        == "└── root\n    ├── a\n    ├── b\n    ├── c\n    ├── foo\n    ├── d\n    ├── e\n    ├── f\n    ├── g\n    └── h\n"
+    )
+    root.insert_child(-42, "bar")
+    assert (
+        format(root, "pipe")
+        == "└── root\n    ├── bar\n    ├── a\n    ├── b\n    ├── c\n    ├── foo\n    ├── d\n    ├── e\n    ├── f\n    ├── g\n    └── h\n"
+    )
+    root.insert_child(42, "baz")
+    assert (
+        format(root, "pipe")
+        == "└── root\n    ├── bar\n    ├── a\n    ├── b\n    ├── c\n    ├── foo\n    ├── d\n    ├── e\n    ├── f\n    ├── g\n    ├── h\n    └── baz\n"
+    )

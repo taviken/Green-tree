@@ -28,6 +28,20 @@ Basic Usage:
     c.add_left(f)
     c.add_right(g)
 
+Using node.show()
+.. code-block:: text
+
+    a.show()
+    └── a
+        ├── b
+        │   ├── d
+        │   └── e
+        └── c
+            ├── f
+            └── g
+
+License
+-------
 License
 -------
 

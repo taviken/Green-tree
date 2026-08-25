@@ -31,7 +31,7 @@ jobs:
           # Add any other project dependencies here
       - name: Run tests
         run: |
-          pytest
+          pytest src/
       - uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v5

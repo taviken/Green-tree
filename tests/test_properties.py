@@ -90,3 +90,12 @@ def test_show(setup1):
         stream.getvalue().strip()
         == "└── a\n    ├── b\n    │   ├── d\n    │   └── e\n    └── c\n        ├── f\n        └── g"
     )
+
+
+def test_from_dict():
+    data = {"a": {"b": {"c": "d"}, "e": {"f": "g"}}}
+    root = Node.from_dict(data)
+    assert (
+        format(root, "pipe")
+        == "└── root\n    └── a\n        ├── b\n        │   └── c\n        │       └── d\n        └── e\n            └── f\n                └── g\n"
+    )

@@ -1,17 +1,28 @@
+"""
+This Module contains data structures and algorithms written in pure python that
+implement a generic tree-node.
+"""
+
 from collections import deque
-from typing import Union, IO, Deque
+from typing import Union, IO, Deque, Generator, Mapping
 from io import StringIO
 from pprint import pprint
 
 
 def _to_dict(node: "Node") -> dict:
+    """
+    module helper function to convert a Node to a dict data structure
+    """
     d = {"value": node.value, "tag": node.tag}
-    if node._children:
-        d["children"] = [_to_dict(child) for child in node._children]
+    if node.children:
+        d["children"] = [_to_dict(child) for child in node.children]
     return d
 
 
 def _format_tree_with_pipes(node: "Node", stream: IO, prefix="", is_last=True):
+    """
+    module helper function that builds a string representation of a given Node.
+    """
     # Connector for the current node
     connector = "└── " if is_last else "├── "
     print(f"{prefix}{connector}{node.value}", file=stream)
@@ -20,46 +31,78 @@ def _format_tree_with_pipes(node: "Node", stream: IO, prefix="", is_last=True):
     new_prefix = prefix + ("    " if is_last else "│   ")
 
     # Iterate through children and recurse
-    temp = list(reversed(node._children))
+    temp = list(reversed(node.children))
     while temp:
         child = temp.pop()
         _format_tree_with_pipes(child, stream, new_prefix, not bool(temp))
 
 
 class Node:
+    """
+    This class represents a generic tree-node data structure.
+    """
+
     __slots__ = ("value", "tag", "parent", "_children")
 
     def __init__(self, value: object, tag: Union[str, int, None] = None):
+        """
+        Initiailizes the Node data structure
+
+        Arguments:
+        value -- any valid python object
+        tag -- optional string tag to help identify this node. Defaults to 'None'
+        """
         self.value = value
         self.tag = tag
-        self.parent = None
-        self._children = deque()
+        self.parent: "Node" | None = None
+        self._children: Deque = deque()
 
     @property
     def children(self) -> Deque:
+        """
+        This node instances children
+        """
         return self._children
 
     @property
     def is_leaf(self) -> bool:
+        """
+        Boolean property, returns True if this is the last node in a tree.
+        """
         return not self._children
 
     @property
     def is_binary(self) -> bool:
+        """
+        Boolean property, returns True if this node has exactly 2 children.
+        """
         return len(self._children) == 2
 
     @property
     def is_root(self) -> bool:
+        """
+        Boolean property, returns True if this is teh top most node.
+        """
         return self.parent is None
 
     @property
     def is_single_link(self) -> bool:
+        """
+        Boolean property, returns True if this node has exactly 1 child.
+        """
         return len(self._children) == 1
 
     @property
     def as_dict(self) -> dict:
+        """
+        This property returns a dict representation of the tree-node.
+        """
         return _to_dict(self)
 
     def add_left(self, item: Union[object, "Node"]) -> None:
+        """
+        This method adds an object or other node instance to the left most side.
+        """
         if not isinstance(item, self.__class__):
             item = self.__class__(item)
 
@@ -67,30 +110,51 @@ class Node:
         self._children.appendleft(item)
 
     def add_right(self, item: Union[object, "Node"]) -> None:
+        """
+        This method adds an object or other node instance to the right most side.
+        """
         if not isinstance(item, self.__class__):
             item = self.__class__(item)
         item.parent = self
         self._children.append(item)
 
-    def level_order_traversal(self):
-
-        root = self
+    def level_order_traversal(self, root=None) -> Generator["Node", None, None]:
+        """
+        Generator method. Depth first traversal algorithm.
+        """
+        if root is None:
+            root = self
         queue = deque([root])
         while queue:
             node = queue.popleft()
 
             yield node
 
-            if node._children:
-                queue.extend(node._children)
+            if node._children:  # pylint: disable=protected-access
+                queue.extend(node._children)  # pylint: disable=protected-access
 
-    def pre_order_traversal(self):
-        return self._dfs_traversal(self, True)
+    def pre_order_traversal(self, root=None) -> Generator["Node", None, None]:
+        """
+        Generator method. Breadth first traversal algorithm. Yields value first,
+        continues traversal.
+        """
+        if root is None:
+            root = self
+        return self._dfs_traversal(root, True)
 
-    def post_order_traversal(self):
-        return self._dfs_traversal(self, False)
+    def post_order_traversal(self, root=None) -> Generator["Node", None, None]:
+        """
+        Generator method. Breadth first traversal algorithm. Yields value last after
+        finishing traversal.
+        """
+        if root is None:
+            root = self
+        return self._dfs_traversal(root, False)
 
-    def _dfs_traversal(self, root, is_preorder=True):
+    def _dfs_traversal(self, root, is_preorder=True) -> Generator["Node", None, None]:
+        """
+        Helper method of the bfs search algorithms, pre and post order traversal.
+        """
 
         if is_preorder:
             yield root
@@ -102,28 +166,53 @@ class Node:
         if not is_preorder:
             yield root
 
-    def __eq__(self, other: Union[object, "Node"]):
+    def __eq__(self, other: Union["Node", object]) -> bool:
         if issubclass(other.__class__, self.__class__):
-            return self.value == other.value
-        else:
-            return self.value == other
+            return self.value == other.value  # type: ignore[attr-defined]
 
-    def __repr__(self):
+        return self.value == other
+
+    def __repr__(self) -> str:
         return f"{self.__class__.__name__}({self.value!r})"
 
-    def __format__(self, format_spec):
+    def __format__(self, format_spec) -> str:
         stream = StringIO()
         if format_spec == "pipe":
             _format_tree_with_pipes(self, stream)
-            return stream.getvalue()
         elif format_spec == "dict":
             pprint(self.as_dict, stream)
-            return stream.getvalue()
-        else:
-            return str(self)
+
+        return stream.getvalue()
 
     def show(self) -> None:
+        """
+        Shortcut method to getting the pipe represntation of this tree-node.
+        Running `print( format(<this>, 'pipe') ) yields the same result.
+        """
         print(f"{self:pipe}")
+
+    def _from_dict_recur(self, node: "Node", datadict: Mapping, node_class: type):
+        """
+        Helper method to recursively create a tree-node from a given mapping.
+        """
+        for value, children in datadict.items():
+            new_node = node_class(value=value)
+            node.add_right(new_node)
+            if isinstance(children, Mapping):
+                self._from_dict_recur(new_node, children, node_class)
+            else:
+                for child in children:
+                    new_node.add_right(child)
+
+    @classmethod
+    def from_dict(cls, data: Mapping, root_name: str | None = None) -> "Node":
+        """
+        Classmethod. Creates a tree-node instance from a given mapping.
+        """
+        root_name = root_name if root_name is not None else "root"
+        root = cls(value=root_name, tag=root_name)
+        root._from_dict_recur(root, data, cls)
+        return root
 
 
 __all__ = [

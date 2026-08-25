@@ -27,7 +27,8 @@ class ChildrenView(Sequence):
         yield from self._registry
 
     def __repr__(self):
-        return f"{type(self).__name__}({list(self._registry)})"
+        temp = ", ".join([f"{i} : {child!r}" for i, child in enumerate(self._registry)])
+        return f"{type(self).__name__}({temp})"
 
 
 def _to_dict(node: "Node") -> dict:
@@ -119,6 +120,17 @@ class Node:
         This property returns a dict representation of the tree-node.
         """
         return _to_dict(self)
+
+    def insert_child(self, index: int, value: object | "Node") -> None:
+        """
+        Inserts any valid object into the given index. If the given index exceeds
+        the current length or is less than 0, it will append the child to the right(same
+        as using the `add_right` method) or prepend the child to the left(same as
+        using the `add_left` method) respectively.
+        """
+        if not isinstance(value, self.__class__):
+            value = self.__class__(value)
+        self._children.insert(index, value)
 
     def add_left(self, item: Union[object, "Node"]) -> None:
         """
@@ -217,12 +229,30 @@ class Node:
         )
 
     def __dir__(self):
-        # Get all normal attributes/methods belonging to the object
         normal_attrs = super().__dir__()
-        # Extract just the names of the children from the deque
         child_names = [child.value for child in self.children]
-        # Return a merged list of all unique attribute names
+
         return sorted(set(normal_attrs + child_names))
+
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            # Normalize negative bounds, omissions, and steps
+            start, stop, step = key.indices(len(self._children))
+
+            # Use a list comprehension to handle complex slicing (like negative steps)
+            return [self._children[i] for i in range(start, stop, step)]
+        return self._children[key]
+
+    def __delitem__(self, key):
+        if isinstance(key, slice):
+            # Convert to list to easily perform the slice deletion
+            temp_list = list(self._children)
+            del temp_list[key]
+            # Replace the old deque content with the updated list
+            self._children = deque(temp_list)
+        else:
+            # Handle regular single index deletion
+            del self._children[key]
 
     def show(self) -> None:
         """

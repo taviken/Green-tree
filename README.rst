@@ -44,7 +44,7 @@ Using the show method:
 Using the search by tag methos:
 
 .. code-block:: python
->>> a.search_by_tag('tag name here')
+    >>> a.search_by_tag('tag name here')
 
 
 

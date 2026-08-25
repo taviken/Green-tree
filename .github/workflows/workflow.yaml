@@ -1,16 +1,16 @@
-name: Python application CI
+name: Green-tree
 
 on:
   push:
     paths-ignore:
       - 'LICENSE'
       - 'README.rst'
-    branches: [ "main",'test-pipeline' ]
+    branches: [ "main" ]
   pull_request:
     paths-ignore:
       - 'LICENSE'
       - 'README.rst'
-    branches: [ "main",'test-pipeline' ]
+    branches: [ "main" ]
 
 
 jobs:

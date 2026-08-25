@@ -28,16 +28,6 @@ Basic Usage:
     c.add_left(f)
     c.add_right(g)
 
-Using the show method:
-    a.show()
-    └── a
-        ├── b
-        │   ├── d
-        │   └── e
-        └── c
-            ├── f
-            └── g
-
 License
 -------
 

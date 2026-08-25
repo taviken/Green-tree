@@ -30,4 +30,4 @@ jobs:
           python -m build
 
       - name: Publish package distributions to PyPI
-        uses: pypa/publishtools/pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@release/v1

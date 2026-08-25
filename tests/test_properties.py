@@ -106,3 +106,22 @@ def test_from_dict():
         format(root, "pipe")
         == "└── root\n    └── a\n        ├── b\n        │   └── c\n        │       ├── 1\n        │       ├── 2\n        │       └── 3\n        └── e\n            └── f\n                └── g\n"
     )
+
+
+def test_getattr(setup1):
+    a, b, *_ = setup1
+    assert a.b == b
+
+    with pytest.raises(AttributeError) as e:
+        a.foo
+
+
+def test_children_view(setup1):
+    a, *_ = setup1
+    view = a.children
+    assert str(view) == "ChildrenView([Node('b'), Node('c')])"
+
+
+def test_dir(setup1):
+    a, *_ = setup1
+    assert "b" in dir(a)

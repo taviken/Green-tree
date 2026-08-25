@@ -9,6 +9,27 @@ from io import StringIO
 from pprint import pprint
 
 
+class ChildrenView(Sequence):
+    """
+    A read-only realtime view of Node children
+    """
+
+    def __init__(self, registry) -> None:
+        self._registry = registry
+
+    def __len__(self) -> int:
+        return len(self._registry)
+
+    def __getitem__(self, index):
+        return self._registry[index]
+
+    def __iter__(self):
+        yield from self._registry
+
+    def __repr__(self):
+        return f"{type(self).__name__}({list(self._registry)})"
+
+
 def _to_dict(node: "Node") -> dict:
     """
     module helper function to convert a Node to a dict data structure
@@ -58,11 +79,11 @@ class Node:
         self._children: Deque = deque()
 
     @property
-    def children(self) -> Deque:
+    def children(self) -> ChildrenView:
         """
         This node instances children
         """
-        return self._children
+        return ChildrenView(self._children)
 
     @property
     def is_leaf(self) -> bool:
@@ -183,6 +204,25 @@ class Node:
             pprint(self.as_dict, stream)
 
         return stream.getvalue()
+
+    def __getattr__(self, name: str):
+
+        for child in self._children:
+            if str(child.value) == name:
+                return child
+
+        # Raise standard AttributeError if child is not found
+        raise AttributeError(
+            f"'{type(self).__name__}' object has no attribute '{name}'"
+        )
+
+    def __dir__(self):
+        # Get all normal attributes/methods belonging to the object
+        normal_attrs = super().__dir__()
+        # Extract just the names of the children from the deque
+        child_names = [child.value for child in self.children]
+        # Return a merged list of all unique attribute names
+        return sorted(set(normal_attrs + child_names))
 
     def show(self) -> None:
         """

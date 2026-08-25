@@ -30,7 +30,7 @@ Basic Usage:
 
 Using the show method:
 
-.. code-block:: python
+.. code-block:: text
 
     a.show()
     └── a
@@ -43,6 +43,7 @@ Using the show method:
 
 License
 -------
+
 
 Licensed under the `MIT License`_.
 

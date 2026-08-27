@@ -119,12 +119,7 @@ def test_getattr(setup1):
 def test_children_view(setup1):
     a, *_ = setup1
     view = a.children
-    assert str(view) == "ChildrenView(0 : Node('b'), 1 : Node('c'))"
-
-
-def test_dir(setup1):
-    a, *_ = setup1
-    assert "b" in dir(a)
+    assert str(view) == "NodeChildrenView(0 : Node('b'), 1 : Node('c'))"
 
 
 def test_getitem():

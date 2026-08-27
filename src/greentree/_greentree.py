@@ -9,7 +9,13 @@ from io import StringIO
 from pprint import pprint
 
 
-class ChildrenView(Sequence):
+class NodeIndexError(IndexError):
+    def __init__(self, key, length):
+        msg = f"Children index out of range. Valid range is {-length} to {length-1}. Received key of {key}"
+        super().__init__(msg)
+
+
+class NodeChildrenView(Sequence):
     """
     A read-only realtime view of Node children
     """
@@ -80,11 +86,11 @@ class Node:
         self._children: Deque = deque()
 
     @property
-    def children(self) -> ChildrenView:
+    def children(self) -> NodeChildrenView:
         """
         This node instances children
         """
-        return ChildrenView(self._children)
+        return NodeChildrenView(self._children)
 
     @property
     def is_leaf(self) -> bool:
@@ -228,20 +234,20 @@ class Node:
             f"'{type(self).__name__}' object has no attribute '{name}'"
         )
 
-    def __dir__(self):
-        normal_attrs = super().__dir__()
-        child_names = [child.value for child in self.children]
-
-        return sorted(set(normal_attrs + child_names))
-
     def __getitem__(self, key):
         if isinstance(key, slice):
             # Normalize negative bounds, omissions, and steps
             start, stop, step = key.indices(len(self._children))
 
             # Use a list comprehension to handle complex slicing (like negative steps)
-            return [self._children[i] for i in range(start, stop, step)]
-        return self._children[key]
+            retval = [self._children[i] for i in range(start, stop, step)]
+        else:
+            try:
+                retval = self._children[key]
+            except IndexError as e:
+                raise NodeIndexError(key, len(self._children)) from e
+
+        return retval
 
     def __delitem__(self, key):
         if isinstance(key, slice):
@@ -291,4 +297,5 @@ class Node:
 
 __all__ = [
     "Node",
+    "NodeIndexError",
 ]

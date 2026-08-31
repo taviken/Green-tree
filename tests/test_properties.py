@@ -150,10 +150,12 @@ def test_delitem():
         == "└── root\n    ├── a\n    ├── c\n    ├── e\n    ├── f\n    ├── g\n    └── h\n"
     )
 
+
 def test_weakref(setup1):
     a, *_ = setup1
     ref = weakref.ref(a)
-    assert isinstance(type(ref), weakref.ReferenceType)
+    assert isinstance(ref, weakref.ReferenceType)
+
 
 def test_insert():
     root = Node("root")

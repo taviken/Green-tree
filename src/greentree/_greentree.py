@@ -70,7 +70,7 @@ class Node:
     This class represents a generic tree-node data structure.
     """
 
-    __slots__ = ("value", "tag", "parent", "_children")
+    __slots__ = ("value", "tag", "parent", "_children", "__weakref__")
 
     def __init__(self, value: object, tag: Union[str, int, None] = None):
         """

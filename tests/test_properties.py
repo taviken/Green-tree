@@ -2,6 +2,7 @@ from src.greentree import *
 import pytest
 from io import StringIO
 from contextlib import redirect_stdout
+import weakref
 
 
 @pytest.fixture
@@ -148,6 +149,12 @@ def test_delitem():
         format(root, "pipe")
         == "└── root\n    ├── a\n    ├── c\n    ├── e\n    ├── f\n    ├── g\n    └── h\n"
     )
+
+
+def test_weakref(setup1):
+    a, *_ = setup1
+    ref = weakref.ref(a)
+    assert isinstance(ref, weakref.ReferenceType)
 
 
 def test_insert():

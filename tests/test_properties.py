@@ -1,5 +1,6 @@
 from src.greentree import *
 import pytest
+import re
 from io import StringIO
 from contextlib import redirect_stdout
 import weakref
@@ -176,3 +177,12 @@ def test_insert():
         format(root, "pipe")
         == "└── root\n    ├── bar\n    ├── a\n    ├── b\n    ├── c\n    ├── foo\n    ├── d\n    ├── e\n    ├── f\n    ├── g\n    ├── h\n    └── baz\n"
     )
+
+def test_index():
+    root = Node("root")
+    for x in "abcdefgh":
+        root.add_right(x)
+
+    assert root.index("c") == 2
+    with pytest.raises(NodeIndexError, match = re.escape("Value, foo, not found")):
+        root.index('foo')

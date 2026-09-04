@@ -4,14 +4,20 @@ implement a generic tree-node.
 """
 
 from collections import deque
-from typing import Union, IO, Deque, Generator, Mapping, Sequence
+from typing import Union, IO, Deque, Generator, Mapping, Sequence, Any
 from io import StringIO
 from pprint import pprint
 
 
-class NodeIndexError(IndexError):
+class NodeIndexRangeError(IndexError):
     def __init__(self, key, length):
         msg = f"Children index out of range. Valid range is {-length} to {length-1}. Received key of {key}"
+        super().__init__(msg)
+
+
+class NodeIndexError(ValueError):
+    def __init__(self, value):
+        msg = f"Value, {value}, not found"
         super().__init__(msg)
 
 
@@ -29,7 +35,7 @@ class NodeChildrenView(Sequence):
     def __getitem__(self, index):
         return self._registry[index]
 
-    def __iter__(self):
+    def __iter__(self) -> Generator[Any, Any, None]:
         yield from self._registry
 
     def __repr__(self):
@@ -245,7 +251,7 @@ class Node:
             try:
                 retval = self._children[key]
             except IndexError as e:
-                raise NodeIndexError(key, len(self._children)) from e
+                raise NodeIndexRangeError(key, len(self._children)) from e
 
         return retval
 
@@ -259,6 +265,17 @@ class Node:
         else:
             # Handle regular single index deletion
             del self._children[key]
+
+    def index(self, value) -> int:
+        """
+        This method returns the index from a given value in this Node instance. It
+        raises `NodeIndexError` if no value is found.
+        """
+        temp = [child.value for child in self._children]
+        try:
+            return temp.index(value)
+        except ValueError as e:
+            raise NodeIndexError(value) from e
 
     def show(self) -> None:
         """
@@ -298,4 +315,5 @@ class Node:
 __all__ = [
     "Node",
     "NodeIndexError",
+    "NodeIndexRangeError",
 ]

@@ -10,12 +10,19 @@ from pprint import pprint
 
 
 class NodeIndexRangeError(IndexError):
+    """
+    Node index range error. Subclass of IndexError.
+    """
     def __init__(self, key, length):
-        msg = f"Children index out of range. Valid range is {-length} to {length-1}. Received key of {key}"
+        msg = f"Children index out of range. Valid range is {-length} to {length-1}.\
+              Received key of {key}"
         super().__init__(msg)
 
 
 class NodeIndexError(ValueError):
+    """
+    Node index error. Subclass of ValueError.
+    """
     def __init__(self, value):
         msg = f"Value, {value}, not found"
         super().__init__(msg)

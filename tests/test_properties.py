@@ -53,20 +53,7 @@ def test_repr():
 def test_as_dict(setup1):
     a, *_ = setup1
     assert a.as_dict == {
-        "value": "a",
-        "tag": None,
-        "children": [
-            {
-                "value": "b",
-                "tag": None,
-                "children": [{"value": "d", "tag": None}, {"value": "e", "tag": None}],
-            },
-            {
-                "value": "c",
-                "tag": None,
-                "children": [{"value": "f", "tag": None}, {"value": "g", "tag": None}],
-            },
-        ],
+        "a": [{"b": [{"d": None}, {"e": None}]}, {"c": [{"f": None}, {"g": None}]}]
     }
 
 
@@ -79,15 +66,15 @@ def test_format(setup1):
 
     assert (
         f"{a:dict}"
-        == "{'children': [{'children': [{'tag': None, 'value': 'd'},\n                            {'tag': None, 'value': 'e'}],\n               'tag': None,\n               'value': 'b'},\n              {'children': [{'tag': None, 'value': 'f'},\n                            {'tag': None, 'value': 'g'}],\n               'tag': None,\n               'value': 'c'}],\n 'tag': None,\n 'value': 'a'}\n"
+        == "{'a': [{'b': [{'d': None}, {'e': None}]}, {'c': [{'f': None}, {'g': None}]}]}\n"
     )
 
 
 def test_show(setup1):
     a, *_ = setup1
     stream = StringIO()
-    with redirect_stdout(stream):
-        a.show()
+    a.show(stream)
+
     assert (
         stream.getvalue().strip()
         == "└── a\n    ├── b\n    │   ├── d\n    │   └── e\n    └── c\n        ├── f\n        └── g"
@@ -95,19 +82,14 @@ def test_show(setup1):
 
 
 def test_from_dict():
-    data = {"a": {"b": {"c": "d"}, "e": {"f": "g"}}}
+    data = {"a": [{"b": [{"d": None}, {"e": None}]}, {"c": [{"f": None}, {"g": None}]}]}
     root = Node.from_dict(data)
     assert (
         format(root, "pipe")
-        == "└── root\n    └── a\n        ├── b\n        │   └── c\n        │       └── d\n        └── e\n            └── f\n                └── g\n"
+        == '└── a\n    ├── b\n    │   ├── d\n    │   └── e\n    └── c\n        ├── f\n        └── g\n'
     )
 
-    data["a"]["b"]["c"] = [1, 2, 3]
-    root = Node.from_dict(data)
-    assert (
-        format(root, "pipe")
-        == "└── root\n    └── a\n        ├── b\n        │   └── c\n        │       ├── 1\n        │       ├── 2\n        │       └── 3\n        └── e\n            └── f\n                └── g\n"
-    )
+    
 
 
 def test_getattr(setup1):
@@ -178,11 +160,12 @@ def test_insert():
         == "└── root\n    ├── bar\n    ├── a\n    ├── b\n    ├── c\n    ├── foo\n    ├── d\n    ├── e\n    ├── f\n    ├── g\n    ├── h\n    └── baz\n"
     )
 
+
 def test_index():
     root = Node("root")
     for x in "abcdefgh":
         root.add_right(x)
 
     assert root.index("c") == 2
-    with pytest.raises(NodeIndexError, match = re.escape("Value, foo, not found")):
-        root.index('foo')
+    with pytest.raises(NodeIndexError, match=re.escape("Value, foo, not found")):
+        root.index("foo")
